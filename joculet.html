@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Provocare: Managerul Siturilor Arheologice</title>
+<style>
+  /* ======= Stil general ======= */
+  body {
+    font-family: "Poppins", Arial, sans-serif;
+    background: linear-gradient(135deg, #e3f2fd, #f1f8e9);
+    color: #222;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+  }
+  h1 {
+    text-align: center;
+    color: #1a237e;
+    font-size: 1.9em;
+    margin: 20px 0;
+    letter-spacing: 0.5px;
+  }
+  #main-container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  /* ======= Panou scor ======= */
+  .scoreboard {
+    background: #ffffffc2;
+    backdrop-filter: blur(10px);
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-around;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
+    font-weight: 600;
+    animation: fadeIn 0.8s ease;
+  }
+
+  /* ======= Întrebări ======= */
+  .question {
+    background: #fff;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    margin-bottom: 30px;
+    white-space: pre-line;
+    line-height: 1.7;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideUp 0.6s ease forwards;
+  }
+
+  .option button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: #1565c0;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 8px;
+    margin: 12px 0;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  .option button:hover {
+    background: #0d47a1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(13,71,161,0.25);
+  }
+
+  .effect-info {
+    background: #e8f4fd;
+    border-left: 5px solid #1565c0;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-size: 15px;
+    animation: fadeIn 0.7s ease;
+  }
+
+  .next-btn, .restart-btn {
+    background-color: #2e7d32;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    display: block;
+    margin: 20px auto 0;
+    transition: all 0.25s ease;
+  }
+  .next-btn:hover, .restart-btn:hover {
+    background-color: #1b5e20;
+    transform: scale(1.05);
+  }
+  .restart-btn {
+    background-color: #1565c0;
+  }
+
+  .result {
+    background: #e8f5e9;
+    padding: 25px;
+    border-radius: 16px;
+    border: 1px solid #2e7d32;
+    font-weight: 500;
+    font-size: 16px;
+    animation: fadeIn 0.8s ease;
+  }
+
+  /* ======= Animații ======= */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<h1>Provocare: Managerul sitului „Mormântul Regilor”</h1>
+
+<div id="main-container">
+  <div id="scoreboard" class="scoreboard">
+    <div><strong>Bani:</strong> <span id="money">50</span></div>
+    <div><strong>Sustenabilitate:</strong> <span id="sustainability">10</span></div>
+    <div><strong>Valoare Culturală:</strong> <span id="culture">10</span></div>
+  </div>
+  <div id="quiz-container"></div>
+</div>
+
+<script>
+const questions = [
+  {
+    text: `1. Accesul la situri  
+„Aici, sub soare, sunt pașii celor care au trăit înaintea noastră. Dacă deschizi porțile fără măsură, locul se va uza; dacă le închizi cu prea multă asprime, vei tăia întâlnirea oamenilor cu trecutul.”  
+Sfat Zenon: „Limitează cu blândețe — permite vizitarea, nu consumul.”`,
+    options: [
+      { text: `1A — Acces liber, bilete ieftine, fără limitări  
+Ce se întâmplă: Aflux mare, venit imediat, dar eroziune și deteriorare accelerată.`, effects: { money: 30, sustainability: -35, culture: -20 } },
+      { text: `1B — Acces controlat: tururi ghidate, bilete limitate  
+Ce se întâmplă: Mai puțin trafic fizic, experiență de calitate, alternative VR pentru cei care rămân afară.`, effects: { money: 5, sustainability: 30, culture: 20 } }
+    ]
+  },
+  {
+    text: `2. Transformarea sitului  
+„Piatra păstrează istorii; dacă o învelim în strălucire modernă, ascundem povestea acesteia. A o conserva și a o explica înseamnă a dărui sens generațiilor viitoare, mai valoros decât un profit efemer.”  
+Sfat Zenon: „Restaurează cu respect: investește în poveste, nu doar în profit.”`,
+    options: [
+      { text: `2A — Transformare comercială (cafenea mare, platforme, magazin extins)  
+Ce se întâmplă: Venituri mari la scurt timp, dar autenticitatea și integritatea sitului suferă.`, effects: { money: 40, sustainability: -30, culture: -40 } },
+      { text: `2B — Restaurare conservativă + centru educațional eco  
+Ce se întâmplă: Cost inițial, dar păstrezi elementele istorice și crești valoarea culturală pe termen lung.`, effects: { money: -30, sustainability: 40, culture: 35 } }
+    ]
+  },
+  {
+    text: `3. Suvenirurile vândute  
+„Un mic amănunt poate purta o descendență întreagă. Dacă vindem replici goale, vindem uitare; dacă susținem economia locală, vindem memorie.”  
+Sfat Zenon: „Alege autenticitatea — sprijină comunitatea, chiar dacă marja de profit e mai mică.”`,
+    options: [
+      { text: `3A — Suveniruri de masă, importate, ieftine  
+Ce se întâmplă: Profit rapid din volum, dar subminezi economia locală și autenticitatea.`, effects: { money: 25, sustainability: -15, culture: -30 } },
+      { text: `3B — Suveniruri artizanale locale (cooperativă, fair trade)  
+Ce se întâmplă: Susții meșteșugarii locali; produse autentice și etice, cu valoare culturală ridicată.`, effects: { money: 5, sustainability: 20, culture: 30 } }
+    ]
+  },
+  {
+    text: `4. Reclama făcută sitului  
+„Strigătul tare aduce mulți oameni, dar nu toți vin cu inima deschisă. A spune adevărul tihnit, cu onoare, atrage pe cei care vor asculta și vor înțelege.”  
+Sfat Zenon: „Promovează educația, nu senzaționalul — publicul potrivit e mai valoros decât mulțimea neinteresată.”`,
+    options: [
+      { text: `4A — Campanie agresivă plătită (agenție + influenceri)  
+Descriere: Investiție masivă pentru expunere rapidă. Poate genera mulți vizitatori imediat, dar costă mult și riscă supraexpunere.`, effects: { money: 30, sustainability: -20, culture: -10 } },
+      { text: `4B — Marketing responsabil (parteneriate locale, conținut educațional)  
+Descriere: Promovare etică bazată pe povești locale, materiale educaționale și colaborări cu comunitatea.`, effects: { money: -10, sustainability: 20, culture: 15 } }
+    ]
+  },
+  {
+    text: `5. Infrastructura către sit  
+„Drumul deschide întâlniri, dar și răni în pământ. Calea care respectă pantele și florile va aduce vizitatori care înțeleg locul; șoseaua lată aduce mașini care nu vor lăsa, după plecare, locul la fel.”  
+Sfat Zenon: „Construirea cu blândețe față de natură asigură viitorul sitului.”`,
+    options: [
+      { text: `5A — Drum asfaltat lat + parcare mare  
+Descriere: Soluție rapidă pentru acces auto. Crește comoditatea, dar are impact ecologic semnificativ.`, effects: { money: -30, sustainability: -25, culture: -5 } },
+      { text: `5B — Trasee pietonale + transport electric  
+Descriere: Investiție în trasee pietonale și micro-transport electric; protejează mediul și experiența.`, effects: { money: -20, sustainability: 35, culture: 10 } }
+    ]
+  }
+];
+
+let currentQuestionIndex = 0;
+let scores = { money: 50, sustainability: 10, culture: 10 };
+
+const container = document.getElementById('quiz-container');
+const moneyEl = document.getElementById('money');
+const sustainabilityEl = document.getElementById('sustainability');
+const cultureEl = document.getElementById('culture');
+
+function updateScoreboard() {
+  moneyEl.textContent = scores.money;
+  sustainabilityEl.textContent = scores.sustainability;
+  cultureEl.textContent = scores.culture;
+}
+
+function showQuestion() {
+  container.innerHTML = '';
+  if (currentQuestionIndex >= questions.length) {
+    showResult();
+    return;
+  }
+
+  const q = questions[currentQuestionIndex];
+  const qDiv = document.createElement('div');
+  qDiv.className = 'question';
+  const qText = document.createElement('p');
+  qText.textContent = q.text;
+  qDiv.appendChild(qText);
+
+  q.options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.innerText = opt.text;
+    btn.onclick = () => {
+      scores.money += opt.effects.money;
+      scores.sustainability += opt.effects.sustainability;
+      scores.culture += opt.effects.culture;
+      updateScoreboard();
+
+      const info = document.createElement('div');
+      info.className = 'effect-info';
+      info.innerHTML = `<strong>${opt.text.split('Ce se întâmplă:')[1] || opt.text.split('Descriere:')[1] || ''}</strong><br>
+      <em>Schimbări:</em> 
+      Bani ${opt.effects.money >= 0 ? '+' : ''}${opt.effects.money}, 
+      Sustenabilitate ${opt.effects.sustainability >= 0 ? '+' : ''}${opt.effects.sustainability}, 
+      Valoare Culturală ${opt.effects.culture >= 0 ? '+' : ''}${opt.effects.culture}`;
+
+      qDiv.innerHTML = '';
+      qDiv.appendChild(qText);
+      qDiv.appendChild(info);
+
+      const nextBtn = document.createElement('button');
+      nextBtn.className = 'next-btn';
+      nextBtn.textContent = 'Continuă';
+      nextBtn.onclick = () => {
+        currentQuestionIndex++;
+        showQuestion();
+      };
+      qDiv.appendChild(nextBtn);
+    };
+    const optDiv = document.createElement('div');
+    optDiv.className = 'option';
+    optDiv.appendChild(btn);
+    qDiv.appendChild(optDiv);
+  });
+
+  container.appendChild(qDiv);
+}
+
+function showResult() {
+  container.innerHTML = '';
+  const resDiv = document.createElement('div');
+  resDiv.className = 'result';
+
+  if (scores.money < 0) {
+    resDiv.innerHTML = `<h2>Faliment (sit închis)</h2>
+    Situl s-a închis din lipsă de fonduri. Ai uitat că echilibrul între grijă și profit e cheia.`;
+  } else if (scores.sustainability > 80 && scores.culture > 80) {
+    resDiv.innerHTML = `<h2>Gardian al Patrimoniului</h2>
+    Ai păstrat locul cu blândețe și ai creat un model de sustenabilitate culturală.`;
+  } else if (scores.sustainability >= 50 && scores.culture >= 50) {
+    resDiv.innerHTML = `<h2>Păstrător Cultural</h2>
+    Ai echilibrat economia și respectul față de patrimoniu — un exemplu pentru alții.`;
+  } else {
+    resDiv.innerHTML = `<h2>Manager Echilibrat</h2>
+    Situl supraviețuiește, dar cu compromisuri. Poți face mai bine data viitoare.`;
+  }
+
+  const restartBtn = document.createElement('button');
+  restartBtn.className = 'restart-btn';
+  restartBtn.textContent = 'Reîncearcă jocul';
+  restartBtn.onclick = restartGame;
+
+  container.appendChild(resDiv);
+  container.appendChild(restartBtn);
+}
+
+function restartGame() {
+  scores = { money: 50, sustainability: 10, culture: 10 };
+  currentQuestionIndex = 0;
+  updateScoreboard();
+  showQuestion();
+}
+
+updateScoreboard();
+showQuestion();
+</script>
+
+</body>
+</html>
